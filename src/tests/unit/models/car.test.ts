@@ -36,7 +36,7 @@ describe('Car Model', () => {
 
 	describe('searching a specific car by _id', () => {
 		it('successfully found', async () => {
-			const carFound = await carModel.readOne('62cf1fc6498565d94eba52cd');
+			const carFound = await carModel.readOne(carMockWithId._id);
 			expect(carFound).to.be.deep.equal(carMockWithId);
 		});
 
