@@ -16,9 +16,11 @@ describe('Car Service', () => {
 		sinon.stub(carModel, 'readOne')
       .onCall(0).resolves(carMockWithId)
       .onCall(1).resolves(null)
-      .onCall(2).resolves(carMockWithId); 
+      .onCall(2).resolves(carMockWithId)
+      .onCall(3).resolves(carMockWithId)
+      .onCall(4).resolves(carMockWithId); 
     sinon.stub(carModel, 'update').resolves(carMockWithId);
-    sinon.stub(carModel, 'delete').resolves();
+    sinon.stub(carModel, 'delete').resolves(carMockWithId);
 	});
 
 	after(() => {
@@ -63,21 +65,31 @@ describe('Car Service', () => {
 	});
 
   describe('update an existing car', () => {
+		it('successfully', async () => {
+		  const updatedCar = await carService.update(carMockWithId._id, carMock);
+		  expect(updatedCar).to.be.deep.equal(carMockWithId);
+		});
+
     it('failure', async () => {
       try {
 				await carService.update('WrongId', carMockWithId);
 			} catch (error: any) {
-				expect(error.message).to.be.eq('InvalidMongoId');
+				expect(error.message).to.be.equal(ErrorTypes.InvalidMongoId);
 			}
     });
   });
 
   describe('delete a car', () => {
+		it('successfully', async () => {
+			const deletedCar = await carService.delete(carMockWithId._id);
+			expect(deletedCar).to.be.deep.equal(carMockWithId);
+		});
+
     it('_id not found', async () => {
       try {
         await carService.delete('WrongId');
       } catch (error: any) {
-        expect(error.message).to.be.eq('EntityNotFound');
+        expect(error.message).to.be.equal(ErrorTypes.EntityNotFound);
       }
     });
   });

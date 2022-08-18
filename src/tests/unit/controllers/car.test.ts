@@ -70,8 +70,8 @@ describe('Car Controller', () => {
     it('successfully', async () => {
       req.params = { id: carMockWithId._id }
       await carController.delete(req, res);
-      expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
-      expect((res.json as sinon.SinonStub).calledWith(carMockWithId)).to.be.true;
+      expect((res.status as sinon.SinonStub).calledWith(204)).to.be.true;
+      expect((res.json as sinon.SinonStub).calledWith()).to.be.true;
     });
   });
 });

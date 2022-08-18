@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import CarModel from '../../../models/Car';
+import { ErrorTypes } from '../../../errors/errorCatalog';
 import { Model } from 'mongoose';
 import { deleteMockWithId, carMock, carMockAll, carMockWithId } from '../../mocks/car.test';
 
@@ -11,7 +12,7 @@ describe('Car Model', () => {
 		sinon.stub(Model, 'create').resolves(carMockWithId);
     sinon.stub(Model, 'find').resolves(carMockAll);
 		sinon.stub(Model, 'findOne').resolves(carMockWithId);
-    sinon.stub(Model, 'update').resolves();
+    sinon.stub(Model, 'findByIdAndUpdate').resolves(carMockWithId);
     sinon.stub(Model, 'deleteOne').resolves(deleteMockWithId);
 	});
 
@@ -43,27 +44,37 @@ describe('Car Model', () => {
 			try {
 				await carModel.readOne('WrongId');
 			} catch (error: any) {
-				expect(error.message).to.be.eq('InvalidMongoId');
+				expect(error.message).to.be.equal(ErrorTypes.InvalidMongoId);
 			}
 		});
 	});
 
   describe('changing an existing car', () => {
+		it('successfully', async () => {
+			const carChange = await carModel.update(carMockWithId._id, carMock);
+			expect(carChange).to.be.deep.equal(carMockWithId);
+		});
+
 		it('_id not found to change', async () => {
 			try {
-				await carModel.update('WrongId', carMockWithId);
+				await carModel.update('WrongId', carMock);
 			} catch (error: any) {
-				expect(error.message).to.be.eq('InvalidMongoId');
+				expect(error.message).to.be.equal(ErrorTypes.InvalidMongoId);
 			}
 		});
   });
 
   describe('deleting a car', () => {
+		it('successfully', async () => {
+			const deletedCar = await carModel.delete(carMockWithId._id);
+			expect(deletedCar).to.be.deep.equal(carMockWithId);
+		});
+
     it('_id not found', async () => {
 			try {
 				await carModel.delete('WrongId');
 			} catch (error: any) {
-				expect(error.message).to.be.eq('InvalidMongoId');
+				expect(error.message).to.be.equal(ErrorTypes.InvalidMongoId);
 			}
 		});
 	});
