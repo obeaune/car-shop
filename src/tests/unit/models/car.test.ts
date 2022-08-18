@@ -65,11 +65,6 @@ describe('Car Model', () => {
   });
 
   describe('deleting a car', () => {
-		it('successfully', async () => {
-			const deletedCar = await carModel.delete(carMockWithId._id);
-			expect(deletedCar).to.be.deep.equal(carMockWithId);
-		});
-
     it('_id not found', async () => {
 			try {
 				await carModel.delete('WrongId');
